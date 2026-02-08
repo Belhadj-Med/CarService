@@ -1,0 +1,77 @@
+.admin-dashboard {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.passcode-change {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  align-items: center; /* vertically align input and button */
+}
+
+.passcode-change input {
+  flex: 1;
+  min-width: 200px;      /* ensures input is not too small */
+  height: 40px;           /* set a consistent height */
+  padding-left: 10px;     /* left padding only */
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;        /* easier to read */
+  box-sizing: border-box; /* include padding in width */
+}
+
+.passcode-change button {
+  height: 40px;            /* same height as input */
+  padding: 0 20px;         /* horizontal padding */
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.passcode-change button:hover {
+  background-color: #0056b3;
+}
+.passcode-msg {
+  width: 100%;
+  color: green;
+  margin-top: 5px;
+}
+
+.error {
+  color: red;
+  margin-bottom: 15px;
+}
+
+.orders-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 15px;
+}
+
+.order-card {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.order-card button {
+  margin-top: 10px;
+  width: 100%;
+  background: red;
+  color: white;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.order-card button:hover {
+  background: darkred;
+}

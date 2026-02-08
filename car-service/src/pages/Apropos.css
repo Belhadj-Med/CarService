@@ -1,0 +1,50 @@
+.apropos-page {
+  min-height: 100vh;
+  padding: 40px 20px 80px; /* same padding as other pages for consistency */
+  background: #0f172a; /* dark modern background matching Home & Service */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.apropos-container {
+  max-width: 900px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 30px;
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+}
+
+.apropos-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.apropos-text {
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  line-height: 1.8;
+  margin-bottom: 20px;
+  text-align: right; /* Arabic text alignment */
+}
+
+/* Responsive for smaller screens */
+@media (max-width: 768px) {
+  .apropos-page {
+    padding: 100px 15px 50px;
+  }
+
+  .apropos-container {
+    padding: 20px;
+  }
+
+  .apropos-title {
+    font-size: 2rem;
+  }
+
+  .apropos-text {
+    font-size: 1rem;
+  }
+}
