@@ -1,5 +1,7 @@
 const express = require("express");
 const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
+const resend = new Resend(process.env.RESEND_API_KEY);
 const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -192,11 +194,11 @@ app.post("/service", async (req, res) => {
     await newRequest.save();
 
     // 2️⃣ Envoi d'email avec les détails
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER,
-      subject: "📩 Nouvelle demande de service - Car Service",
-      text: `
+    await resend.emails.send({
+  from: "Car Service <onboarding@resend.dev>",
+  to: process.env.EMAIL_USER,
+  subject: "📩 Nouvelle demande de service - Car Service",
+  text: `
 Nouvelle demande de service reçue:
 
 Nom: ${name}
@@ -206,10 +208,8 @@ Type de voiture: ${carType}
 Modèle: ${carModel}
 Moteur: ${engine}
 Type d'huile: ${oilType}
-      `,
-    };
-
-    await transporter.sendMail(mailOptions);
+  `,
+});
 
     res.status(200).json({
       message:
