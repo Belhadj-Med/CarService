@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./AdminLogin.css";
-import { BACKEND_URL } from "./config";
+import { BACKEND_URL } from "../config";
 const AdminLogin = ({ setToken }) => {
   const [passcode, setPasscode] = useState("");
   const [error, setError] = useState("");

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./AdminDashboard.css";
-import { BACKEND_URL } from "./config";
+import { BACKEND_URL } from "../config";
 const AdminDashboard = ({ token }) => {
   const [requests, setRequests] = useState([]);
   const [error, setError] = useState("");

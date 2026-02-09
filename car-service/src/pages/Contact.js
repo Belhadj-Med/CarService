@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Contact.css";
-import { BACKEND_URL } from "./config";
+import { BACKEND_URL } from "../config";
 const Contact = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
