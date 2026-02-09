@@ -121,7 +121,7 @@ app.post("/contact", async (req, res) => {
 
   try {
     await resend.emails.send({
-  from: email,
+  from: `${email} <onboarding@resend.dev>`,
   to: process.env.EMAIL_USER,
   subject: "رسالة جديدة من موقع Car Service",
   text:`البريد الإلكتروني: ${email}\nالرسالة: ${message}`,
