@@ -1,5 +1,4 @@
 const express = require("express");
-const nodemailer = require("nodemailer");
 const { Resend } = require("resend");
 const resend = new Resend(process.env.RESEND_API_KEY);
 const cors = require("cors");
@@ -16,32 +15,15 @@ mongoose
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middlewares
 app.use(cors());
-app.use(express.json()); // parse JSON
+app.use(express.json()); 
 
-// ================== CONFIGURATION EMAIL (UNE SEULE FOIS) ==================
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  tls: {
-    rejectUnauthorized: false
-  }
-});
-
-// ========================================================================
 let ADMIN_PASSCODE;
 
 const initAdmin = async () => {
   try {
     let admin = await Admin.findOne();
     if (!admin) {
-      // If no passcode exists, create default
       admin = new Admin({ passcode: "1234" });
       await admin.save();
     }
@@ -54,7 +36,6 @@ const initAdmin = async () => {
 
 initAdmin();
 
-// Test route
 app.get("/", (req, res) => {
   res.send("Backend is running!");
 });
@@ -77,10 +58,8 @@ app.post("/admin/login", async (req, res) => {
       return res.status(401).json({ error: "Incorrect passcode" });
     }
 
-    // Generate session token
     ADMIN_SESSION = Math.random().toString(36).substring(2, 15);
 
-    // Always send valid JSON
     return res.status(200).json({ message: "Login successful", token: ADMIN_SESSION });
   } catch (err) {
     console.error("Login error:", err);
@@ -95,6 +74,7 @@ const verifyAdmin = (req, res, next) => {
   }
   next();
 };
+
 app.get("/adm/dashboard", verifyAdmin, async (req, res) => {
   try {
     const requests = await ServiceRequest.find().sort({ createdAt: -1 });
@@ -122,7 +102,7 @@ app.post("/admin/change-passcode", async (req, res) => {
     }
     await admin.save();
 
-    ADMIN_PASSCODE = newPasscode; // update in memory too
+    ADMIN_PASSCODE = newPasscode;
     res.status(200).json({ message: "Passcode updated successfully" });
   } catch (err) {
     console.error(err);
@@ -130,7 +110,6 @@ app.post("/admin/change-passcode", async (req, res) => {
   }
 });
 
-// ================== CONTACT ROUTE ==================
 app.post("/contact", async (req, res) => {
   const { email, message } = req.body;
 
@@ -141,14 +120,12 @@ app.post("/contact", async (req, res) => {
   }
 
   try {
-    const mailOptions = {
-      from: email,
-      to: process.env.EMAIL_USER,
-      subject: "رسالة جديدة من موقع Car Service",
-      text: `البريد الإلكتروني: ${email}\nالرسالة: ${message}`,
-    };
-
-    await transporter.sendMail(mailOptions);
+    await resend.emails.send({
+  from: email,
+  to: process.env.EMAIL_USER,
+  subject: "رسالة جديدة من موقع Car Service",
+  text:`البريد الإلكتروني: ${email}\nالرسالة: ${message}`,
+});
 
     res.status(200).json({ message: "تم إرسال الرسالة بنجاح" });
   } catch (error) {
@@ -156,11 +133,9 @@ app.post("/contact", async (req, res) => {
     res.status(500).json({ error: "حدث خطأ أثناء إرسال الرسالة" });
   }
 });
-// ================================================
 
 const ServiceRequest = require("./models/ServiceRequest");
 
-// ================== SERVICE ROUTE (SAUVEGARDE + EMAIL) ==================
 app.post("/service", async (req, res) => {
   const { name, phone, address, carType, carModel, engine, oilType } =
     req.body;
@@ -180,7 +155,6 @@ app.post("/service", async (req, res) => {
   }
 
   try {
-    // 1️⃣ Sauvegarde dans MongoDB
     const newRequest = new ServiceRequest({
       name,
       phone,
@@ -193,7 +167,6 @@ app.post("/service", async (req, res) => {
 
     await newRequest.save();
 
-    // 2️⃣ Envoi d'email avec les détails
     await resend.emails.send({
   from: "Car Service <onboarding@resend.dev>",
   to: process.env.EMAIL_USER,
@@ -220,14 +193,12 @@ Type d'huile: ${oilType}
     res.status(500).json({ error: "Erreur serveur" });
   }
 });
-// =======================================================
-// Get all service requests
+
 app.get("/admin/services", async (req, res) => {
   const requests = await ServiceRequest.find();
   res.json(requests);
 });
 
-// Delete a service request
 app.delete("/admin/services/:id", async (req, res) => {
   await ServiceRequest.findByIdAndDelete(req.params.id);
   res.json({ message: "Deleted successfully" });
