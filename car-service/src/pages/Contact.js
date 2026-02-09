@@ -74,15 +74,15 @@ const handleSubmit = async (e) => {
 
           {/* Social media links at the bottom */}
           <div className="contact-socials">
-            <a href="https://wa.me/" target="_blank" rel="noreferrer">
-              <i className="fab fa-whatsapp"></i>
-            </a>
-            <a href="https://instagram.com/" target="_blank" rel="noreferrer">
-              <i className="fab fa-instagram"></i>
-            </a>
-            <a href="https://facebook.com/" target="_blank" rel="noreferrer">
-              <i className="fab fa-facebook"></i>
-            </a>
+        <a href="https://wa.me/21626374252" target="_blank" rel="noreferrer">
+          <i className="fab fa-whatsapp"></i>
+        </a>
+        <a href="https://instagram.com/" target="_blank" rel="noreferrer">
+          <i className="fab fa-instagram"></i>
+        </a>
+        <a href="https://www.facebook.com/belhadj.med.amin/" target="_blank" rel="noreferrer">
+          <i className="fab fa-facebook"></i>
+        </a>
           </div>
         </form>
       </div>

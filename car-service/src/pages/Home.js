@@ -17,17 +17,15 @@ function Home() {
         </Link>
       </div>
       <div className="social-icons">
-  <a href="https://wa.me/yourNumber" target="_blank" rel="noreferrer">
-    <i className="fab fa-whatsapp"></i>
-  </a>
-
-  <a href="https://instagram.com/yourPage" target="_blank" rel="noreferrer">
-    <i className="fab fa-instagram"></i>
-  </a>
-
-  <a href="https://facebook.com/yourPage" target="_blank" rel="noreferrer">
-    <i className="fab fa-facebook"></i>
-  </a>
+        <a href="https://wa.me/21626374252" target="_blank" rel="noreferrer">
+          <i className="fab fa-whatsapp"></i>
+        </a>
+        <a href="https://instagram.com/" target="_blank" rel="noreferrer">
+          <i className="fab fa-instagram"></i>
+        </a>
+        <a href="https://www.facebook.com/belhadj.med.amin/" target="_blank" rel="noreferrer">
+          <i className="fab fa-facebook"></i>
+        </a>
 </div>
 
     </div>

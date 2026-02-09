@@ -151,7 +151,7 @@ app.post("/service", async (req, res) => {
   ) {
     return res
       .status(400)
-      .json({ error: "Veuillez remplir tous les champs" });
+      .json({ error: "الرجاء تعبئة كامل الاستمارة" });
   }
 
   try {
@@ -186,7 +186,7 @@ Type d'huile: ${oilType}
 
     res.status(200).json({
       message:
-        "Demande enregistrée et email envoyé avec succès !",
+        " لقد تم استلام طلبكم ,سنقوم بالاتصال بكم في اقرب الاجال .\n شكرا على ثقتكم !",
     });
   } catch (err) {
     console.error(err);

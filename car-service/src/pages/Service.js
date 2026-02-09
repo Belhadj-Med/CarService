@@ -156,13 +156,13 @@ const Service = () => {
 
       <p className="service-subtitle">زورونا على مواقع التواصل الاجتماعي</p>
       <div className="service-icons">
-        <a href="https://wa.me/" target="_blank" rel="noreferrer">
+        <a href="https://wa.me/21626374252" target="_blank" rel="noreferrer">
           <i className="fab fa-whatsapp"></i>
         </a>
         <a href="https://instagram.com/" target="_blank" rel="noreferrer">
           <i className="fab fa-instagram"></i>
         </a>
-        <a href="https://facebook.com/" target="_blank" rel="noreferrer">
+        <a href="https://www.facebook.com/belhadj.med.amin/" target="_blank" rel="noreferrer">
           <i className="fab fa-facebook"></i>
         </a>
       </div>
