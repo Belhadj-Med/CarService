@@ -6,7 +6,7 @@ import markerIconImg from "leaflet/dist/images/marker-icon.png";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import "leaflet/dist/leaflet.css";
-
+import { BACKEND_URL } from "./config";
 const markerIcon = new L.Icon({
   iconUrl: markerIconImg,
   shadowUrl: markerShadow,
@@ -44,7 +44,7 @@ const Service = () => {
     const oilType = e.target[6].value;
 
     try {
-      const res = await fetch("http://localhost:5000/service", {
+      const res = await fetch(`${BACKEND_URL}/service`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

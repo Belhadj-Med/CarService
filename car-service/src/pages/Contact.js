@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Contact.css";
-
+import { BACKEND_URL } from "./config";
 const Contact = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -14,7 +14,7 @@ const handleSubmit = async (e) => {
   }
 
   try {
-    const res = await fetch("http://localhost:5000/contact", {
+    const res = await fetch(`${BACKEND_URL}/contact`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, message }),

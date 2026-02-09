@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./AdminLogin.css";
+import { BACKEND_URL } from "./config";
 const AdminLogin = ({ setToken }) => {
   const [passcode, setPasscode] = useState("");
   const [error, setError] = useState("");
@@ -9,7 +10,7 @@ const AdminLogin = ({ setToken }) => {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5000/admin/login", {
+      const res = await fetch(`${BACKEND_URL}/admin/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ passcode }),

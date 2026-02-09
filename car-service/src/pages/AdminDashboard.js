@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./AdminDashboard.css";
-
+import { BACKEND_URL } from "./config";
 const AdminDashboard = ({ token }) => {
   const [requests, setRequests] = useState([]);
   const [error, setError] = useState("");
@@ -10,7 +10,7 @@ const AdminDashboard = ({ token }) => {
   // Fetch service requests
   const fetchRequests = async () => {
     try {
-      const res = await fetch("http://localhost:5000/adm/dashboard", {
+      const res = await fetch(`${BACKEND_URL}/adm/dashboard`, {
         headers: { "x-admin-token": token },
       });
       const data = await res.json();
@@ -33,7 +33,7 @@ const AdminDashboard = ({ token }) => {
   // Delete a request
   const handleDelete = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/service/${id}`, {
+      const res = await fetch(`${BACKEND_URL}/service/${id}`, {
         method: "DELETE",
         headers: { "x-admin-token": token },
       });
@@ -53,7 +53,7 @@ const AdminDashboard = ({ token }) => {
   const handleChangePasscode = async () => {
     if (!newPasscode) return;
     try {
-      const res = await fetch("http://localhost:5000/admin/change-passcode", {
+      const res = await fetch(`${BACKEND_URL}/admin/change-passcode`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ newPasscode }),
