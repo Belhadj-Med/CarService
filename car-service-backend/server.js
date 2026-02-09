@@ -20,16 +20,13 @@ app.use(express.json()); // parse JSON
 
 // ================== CONFIGURATION EMAIL (UNE SEULE FOIS) ==================
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: "smtp-relay.brevo.com",
   port: 587,
-  secure: false, // very important
+  secure: false,
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.BREVO_USER,
+    pass: process.env.BREVO_PASS,
   },
-  tls: {
-    rejectUnauthorized: false
-  }
 });
 
 // ========================================================================
