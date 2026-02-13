@@ -16,7 +16,17 @@ const AdminDashboard = ({ token, setToken }) => {
       const res = await fetch(`${BACKEND_URL}/adm/dashboard`, {
         headers: { 'x-admin-token': token },
       })
-      const data = await res.json()
+      
+      // Check if response is JSON before parsing
+      const contentType = res.headers.get('content-type')
+      let data
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json()
+      } else {
+        const text = await res.text()
+        throw new Error(`Server returned ${res.status}: ${text.substring(0, 100)}`)
+      }
+      
       if (res.ok) {
         setRequests(data)
         setError('')
@@ -29,8 +39,12 @@ const AdminDashboard = ({ token, setToken }) => {
         }
       }
     } catch (err) {
-      console.error(err)
-      setError('حدث خطأ في الاتصال بالخادم')
+      console.error('Fetch requests error:', err)
+      if (err.message?.includes('Failed to fetch') || err.message?.includes('ERR_CONNECTION_REFUSED')) {
+        setError('لا يمكن الاتصال بالخادم. يرجى التحقق من الاتصال بالإنترنت')
+      } else {
+        setError('حدث خطأ في الاتصال بالخادم')
+      }
     } finally {
       setLoading(false)
     }
@@ -53,7 +67,17 @@ const AdminDashboard = ({ token, setToken }) => {
         method: 'DELETE',
         headers: { 'x-admin-token': token },
       })
-      const data = await res.json()
+      
+      // Check if response is JSON before parsing
+      const contentType = res.headers.get('content-type')
+      let data
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json()
+      } else {
+        const text = await res.text()
+        throw new Error(`Server returned ${res.status}: ${text.substring(0, 100)}`)
+      }
+      
       if (res.ok || res.status === 200) {
         setRequests(requests.filter((r) => r._id !== id))
         setSuccess('تم حذف الطلب بنجاح')
@@ -62,8 +86,12 @@ const AdminDashboard = ({ token, setToken }) => {
         setError(data.error || 'حدث خطأ أثناء الحذف')
       }
     } catch (err) {
-      console.error(err)
-      setError('حدث خطأ في الاتصال بالخادم')
+      console.error('Delete request error:', err)
+      if (err.message?.includes('Failed to fetch') || err.message?.includes('ERR_CONNECTION_REFUSED')) {
+        setError('لا يمكن الاتصال بالخادم. يرجى المحاولة لاحقاً')
+      } else {
+        setError('حدث خطأ في الاتصال بالخادم')
+      }
     }
   }
 
@@ -83,7 +111,17 @@ const AdminDashboard = ({ token, setToken }) => {
         },
         body: JSON.stringify({ newPasscode }),
       })
-      const data = await res.json()
+      
+      // Check if response is JSON before parsing
+      const contentType = res.headers.get('content-type')
+      let data
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json()
+      } else {
+        const text = await res.text()
+        throw new Error(`Server returned ${res.status}: ${text.substring(0, 100)}`)
+      }
+      
       if (res.ok) {
         setPasscodeMsg('تم تغيير كلمة المرور بنجاح')
         setNewPasscode('')
@@ -92,8 +130,12 @@ const AdminDashboard = ({ token, setToken }) => {
         setPasscodeMsg(data.error || 'حدث خطأ')
       }
     } catch (err) {
-      console.error(err)
-      setPasscodeMsg('حدث خطأ في الاتصال بالخادم')
+      console.error('Change passcode error:', err)
+      if (err.message?.includes('Failed to fetch') || err.message?.includes('ERR_CONNECTION_REFUSED')) {
+        setPasscodeMsg('لا يمكن الاتصال بالخادم. يرجى المحاولة لاحقاً')
+      } else {
+        setPasscodeMsg('حدث خطأ في الاتصال بالخادم')
+      }
     }
   }
 

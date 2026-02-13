@@ -25,7 +25,15 @@ const AdminLogin = ({ setToken }) => {
         body: JSON.stringify({ passcode }),
       })
 
-      const data = await res.json()
+      // Check if response is JSON before parsing
+      const contentType = res.headers.get('content-type')
+      let data
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json()
+      } else {
+        const text = await res.text()
+        throw new Error(`Server returned ${res.status}: ${text.substring(0, 100)}`)
+      }
 
       if (res.ok) {
         localStorage.setItem('adminToken', data.token)
@@ -34,8 +42,12 @@ const AdminLogin = ({ setToken }) => {
         setError(data.error || 'كلمة المرور غير صحيحة')
       }
     } catch (err) {
-      console.error(err)
-      setError('حدث خطأ في الاتصال بالخادم')
+      console.error('Admin login error:', err)
+      if (err.message?.includes('Failed to fetch') || err.message?.includes('ERR_CONNECTION_REFUSED')) {
+        setError('لا يمكن الاتصال بالخادم. يرجى التحقق من الاتصال بالإنترنت')
+      } else {
+        setError('حدث خطأ في الاتصال بالخادم')
+      }
     } finally {
       setLoading(false)
     }

@@ -57,7 +57,15 @@ const Contact = () => {
         body: JSON.stringify(formData),
       })
 
-      const data = await res.json()
+      // Check if response is JSON before parsing
+      const contentType = res.headers.get('content-type')
+      let data
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json()
+      } else {
+        const text = await res.text()
+        throw new Error(`Server returned ${res.status}: ${text.substring(0, 100)}`)
+      }
 
       if (res.ok) {
         setSuccess(data.message || 'تم إرسال رسالتك بنجاح! سنرد عليك في أقرب وقت')
@@ -69,8 +77,12 @@ const Contact = () => {
         setError(data.error || 'حدث خطأ أثناء إرسال الرسالة')
       }
     } catch (err) {
-      console.error(err)
-      setError('حدث خطأ في الاتصال بالخادم. يرجى المحاولة مرة أخرى')
+      console.error('Contact form error:', err)
+      if (err.message?.includes('Failed to fetch') || err.message?.includes('ERR_CONNECTION_REFUSED')) {
+        setError('لا يمكن الاتصال بالخادم. يرجى التحقق من الاتصال بالإنترنت أو المحاولة لاحقاً')
+      } else {
+        setError('حدث خطأ في الاتصال بالخادم. يرجى المحاولة مرة أخرى')
+      }
     } finally {
       setLoading(false)
     }
