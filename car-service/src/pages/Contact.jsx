@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BACKEND_URL } from '../config'
+import { getApiUrl } from '../config'
 import { safeParseResponse, getErrorMessage } from '../utils/api'
 import './Contact.css'
 
@@ -52,7 +52,7 @@ const Contact = () => {
     setLoading(true)
 
     try {
-      const res = await fetch(`${BACKEND_URL}/contact`, {
+      const res = await fetch(getApiUrl('/contact'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

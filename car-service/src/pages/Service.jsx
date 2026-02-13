@@ -5,7 +5,7 @@ import markerIconImg from 'leaflet/dist/images/marker-icon.png'
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
 import 'leaflet/dist/leaflet.css'
-import { BACKEND_URL } from '../config'
+import { getApiUrl } from '../config'
 import { safeParseResponse, getErrorMessage } from '../utils/api'
 import './Service.css'
 
@@ -106,7 +106,7 @@ const Service = () => {
         ? `${formData.address} (📍 ${position.lat.toFixed(5)}, ${position.lng.toFixed(5)})`
         : formData.address
 
-      const res = await fetch(`${BACKEND_URL}/service`, {
+      const res = await fetch(getApiUrl('/service'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

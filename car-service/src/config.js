@@ -13,4 +13,16 @@ if (import.meta.env.PROD && backendUrl.includes('localhost')) {
   console.error('📝 Solution: Set VITE_BACKEND_URL in Vercel environment variables and redeploy.')
 }
 
+/**
+ * Safely construct API URL by ensuring no double slashes
+ * @param {string} path - API path (e.g., '/contact' or 'contact')
+ * @returns {string} - Full URL
+ */
+export function getApiUrl(path) {
+  // Remove leading slash from path if present
+  const cleanPath = path.startsWith('/') ? path.slice(1) : path
+  // Ensure backendUrl doesn't end with slash and path doesn't start with slash
+  return `${backendUrl.replace(/\/+$/, '')}/${cleanPath}`
+}
+
 export const BACKEND_URL = backendUrl

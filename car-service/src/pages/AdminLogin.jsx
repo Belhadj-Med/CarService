@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BACKEND_URL } from '../config'
+import { getApiUrl } from '../config'
 import { safeParseResponse, getErrorMessage } from '../utils/api'
 import './AdminLogin.css'
 
@@ -20,7 +20,7 @@ const AdminLogin = ({ setToken }) => {
     setLoading(true)
 
     try {
-      const res = await fetch(`${BACKEND_URL}/admin/login`, {
+      const res = await fetch(getApiUrl('/admin/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ passcode }),

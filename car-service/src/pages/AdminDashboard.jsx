@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { BACKEND_URL } from '../config'
+import { getApiUrl } from '../config'
 import { safeParseResponse, getErrorMessage } from '../utils/api'
 import './AdminDashboard.css'
 
@@ -14,7 +14,7 @@ const AdminDashboard = ({ token, setToken }) => {
   const fetchRequests = async () => {
     try {
       setLoading(true)
-      const res = await fetch(`${BACKEND_URL}/adm/dashboard`, {
+      const res = await fetch(getApiUrl('/adm/dashboard'), {
         headers: { 'x-admin-token': token },
       })
       
@@ -63,7 +63,7 @@ const AdminDashboard = ({ token, setToken }) => {
     }
 
     try {
-      const res = await fetch(`${BACKEND_URL}/service/${id}`, {
+      const res = await fetch(getApiUrl(`/service/${id}`), {
         method: 'DELETE',
         headers: { 'x-admin-token': token },
       })
@@ -100,7 +100,7 @@ const AdminDashboard = ({ token, setToken }) => {
     }
 
     try {
-      const res = await fetch(`${BACKEND_URL}/admin/change-passcode`, {
+      const res = await fetch(getApiUrl('/admin/change-passcode'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
