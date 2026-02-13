@@ -1,77 +1,175 @@
-.admin-dashboard {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+.admin-dashboard-page {
+  min-height: 100vh;
+  padding: 120px 0 80px;
+  background: linear-gradient(to bottom, #f8fafc 0%, #e2e8f0 100%);
 }
 
-.passcode-change {
+.dashboard-header {
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
   flex-wrap: wrap;
-  align-items: center; /* vertically align input and button */
+  gap: 1rem;
 }
 
-.passcode-change input {
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  gap: 1rem;
+}
+
+.loading-state .loading {
+  width: 50px;
+  height: 50px;
+  border-width: 4px;
+}
+
+.passcode-section {
+  margin-bottom: 3rem;
+  padding: 2rem;
+}
+
+.passcode-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--dark);
+}
+
+.passcode-form {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.passcode-form .input-group {
   flex: 1;
-  min-width: 200px;      /* ensures input is not too small */
-  height: 40px;           /* set a consistent height */
-  padding-left: 10px;     /* left padding only */
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  font-size: 16px;        /* easier to read */
-  box-sizing: border-box; /* include padding in width */
+  min-width: 200px;
+  margin-bottom: 0;
 }
 
-.passcode-change button {
-  height: 40px;            /* same height as input */
-  padding: 0 20px;         /* horizontal padding */
-  border: none;
-  border-radius: 5px;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-  font-size: 16px;
+.passcode-form button {
+  margin-bottom: 0;
 }
 
-.passcode-change button:hover {
-  background-color: #0056b3;
-}
-.passcode-msg {
-  width: 100%;
-  color: green;
-  margin-top: 5px;
+.success-msg {
+  color: var(--secondary);
+  font-weight: 500;
+  margin-top: 0.5rem;
 }
 
-.error {
-  color: red;
-  margin-bottom: 15px;
+.error-msg {
+  color: var(--danger);
+  font-weight: 500;
+  margin-top: 0.5rem;
 }
 
-.orders-container {
+.requests-section {
+  margin-top: 3rem;
+}
+
+.requests-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
 }
 
-.order-card {
-  background: white;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+.request-card {
+  padding: 1.5rem;
+  border-left: 4px solid var(--primary);
+  transition: all 0.3s ease;
 }
 
-.order-card button {
-  margin-top: 10px;
-  width: 100%;
-  background: red;
-  color: white;
+.request-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.request-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.request-header h3 {
+  font-size: 1.25rem;
+  color: var(--dark);
+  margin: 0;
+}
+
+.btn-delete {
+  background: none;
   border: none;
-  padding: 8px;
+  font-size: 1.25rem;
   cursor: pointer;
-  border-radius: 5px;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
-.order-card button:hover {
-  background: darkred;
+.btn-delete:hover {
+  background: #fee2e2;
+  transform: scale(1.1);
+}
+
+.request-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.detail-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: var(--gray);
+  min-width: 100px;
+}
+
+.detail-value {
+  color: var(--dark);
+  flex: 1;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--gray);
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .admin-dashboard-page {
+    padding: 100px 0 60px;
+  }
+
+  .passcode-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .passcode-form .input-group {
+    min-width: 100%;
+  }
+
+  .requests-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }

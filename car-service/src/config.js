@@ -1,2 +1,2 @@
-
-export const BACKEND_URL = "https://carservice-production-010c.up.railway.app";
+// Backend URL configuration
+export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'
