@@ -57,31 +57,44 @@ const Contact = () => {
         body: JSON.stringify(formData),
       })
 
-      // Check if response is JSON before parsing
-      const contentType = res.headers.get('content-type')
-      let data
-      if (contentType && contentType.includes('application/json')) {
-        data = await res.json()
+      // Handle non-JSON responses (like 404 HTML pages)
+      const contentType = res.headers.get('content-type') || ''
+      let data = null
+      
+      if (contentType.includes('application/json')) {
+        try {
+          data = await res.json()
+        } catch (parseError) {
+          console.error('Failed to parse JSON response:', parseError)
+          throw new Error(`Server returned invalid JSON (status ${res.status})`)
+        }
       } else {
+        // Non-JSON response (likely HTML error page)
         const text = await res.text()
-        throw new Error(`Server returned ${res.status}: ${text.substring(0, 100)}`)
+        console.error(`Non-JSON response (${res.status}):`, text.substring(0, 200))
+        if (res.status === 404) {
+          throw new Error('Endpoint not found. Please check backend configuration.')
+        }
+        throw new Error(`Server error (${res.status}): ${text.substring(0, 100)}`)
       }
 
-      if (res.ok) {
+      if (res.ok && data) {
         setSuccess(data.message || 'تم إرسال رسالتك بنجاح! سنرد عليك في أقرب وقت')
         setFormData({
           email: '',
           message: '',
         })
       } else {
-        setError(data.error || 'حدث خطأ أثناء إرسال الرسالة')
+        setError(data?.error || `حدث خطأ أثناء إرسال الرسالة (${res.status})`)
       }
     } catch (err) {
       console.error('Contact form error:', err)
       if (err.message?.includes('Failed to fetch') || err.message?.includes('ERR_CONNECTION_REFUSED')) {
         setError('لا يمكن الاتصال بالخادم. يرجى التحقق من الاتصال بالإنترنت أو المحاولة لاحقاً')
+      } else if (err.message?.includes('404') || err.message?.includes('not found')) {
+        setError('الخادم غير متاح حالياً. يرجى المحاولة لاحقاً')
       } else {
-        setError('حدث خطأ في الاتصال بالخادم. يرجى المحاولة مرة أخرى')
+        setError(err.message || 'حدث خطأ في الاتصال بالخادم. يرجى المحاولة مرة أخرى')
       }
     } finally {
       setLoading(false)

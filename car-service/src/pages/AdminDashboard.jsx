@@ -17,17 +17,28 @@ const AdminDashboard = ({ token, setToken }) => {
         headers: { 'x-admin-token': token },
       })
       
-      // Check if response is JSON before parsing
-      const contentType = res.headers.get('content-type')
-      let data
-      if (contentType && contentType.includes('application/json')) {
-        data = await res.json()
+      // Handle non-JSON responses (like 404 HTML pages)
+      const contentType = res.headers.get('content-type') || ''
+      let data = null
+      
+      if (contentType.includes('application/json')) {
+        try {
+          data = await res.json()
+        } catch (parseError) {
+          console.error('Failed to parse JSON response:', parseError)
+          throw new Error(`Server returned invalid JSON (status ${res.status})`)
+        }
       } else {
+        // Non-JSON response (likely HTML error page)
         const text = await res.text()
-        throw new Error(`Server returned ${res.status}: ${text.substring(0, 100)}`)
+        console.error(`Non-JSON response (${res.status}):`, text.substring(0, 200))
+        if (res.status === 404) {
+          throw new Error('Endpoint not found. Please check backend configuration.')
+        }
+        throw new Error(`Server error (${res.status}): ${text.substring(0, 100)}`)
       }
       
-      if (res.ok) {
+      if (res.ok && data) {
         setRequests(data)
         setError('')
       } else {
@@ -35,15 +46,17 @@ const AdminDashboard = ({ token, setToken }) => {
           localStorage.removeItem('adminToken')
           setToken(null)
         } else {
-          setError(data.error || 'حدث خطأ في جلب البيانات')
+          setError(data?.error || `حدث خطأ في جلب البيانات (${res.status})`)
         }
       }
     } catch (err) {
       console.error('Fetch requests error:', err)
       if (err.message?.includes('Failed to fetch') || err.message?.includes('ERR_CONNECTION_REFUSED')) {
         setError('لا يمكن الاتصال بالخادم. يرجى التحقق من الاتصال بالإنترنت')
+      } else if (err.message?.includes('404') || err.message?.includes('not found')) {
+        setError('الخادم غير متاح حالياً. يرجى المحاولة لاحقاً')
       } else {
-        setError('حدث خطأ في الاتصال بالخادم')
+        setError(err.message || 'حدث خطأ في الاتصال بالخادم')
       }
     } finally {
       setLoading(false)
@@ -68,29 +81,56 @@ const AdminDashboard = ({ token, setToken }) => {
         headers: { 'x-admin-token': token },
       })
       
-      // Check if response is JSON before parsing
-      const contentType = res.headers.get('content-type')
-      let data
-      if (contentType && contentType.includes('application/json')) {
-        data = await res.json()
+      // Handle non-JSON responses (like 404 HTML pages)
+      const contentType = res.headers.get('content-type') || ''
+      let data = null
+      
+      if (contentType.includes('application/json')) {
+        try {
+          data = await res.json()
+        } catch (parseError) {
+          console.error('Failed to parse JSON response:', parseError)
+          // For DELETE, 200/204 without body is OK
+          if (res.ok || res.status === 200 || res.status === 204) {
+            setRequests(requests.filter((r) => r._id !== id))
+            setSuccess('تم حذف الطلب بنجاح')
+            setTimeout(() => setSuccess(''), 3000)
+            return
+          }
+          throw new Error(`Server returned invalid JSON (status ${res.status})`)
+        }
       } else {
+        // Non-JSON response (likely HTML error page)
         const text = await res.text()
-        throw new Error(`Server returned ${res.status}: ${text.substring(0, 100)}`)
+        console.error(`Non-JSON response (${res.status}):`, text.substring(0, 200))
+        if (res.status === 404) {
+          throw new Error('Endpoint not found. Please check backend configuration.')
+        }
+        // For DELETE, 200/204 without body is OK
+        if (res.ok || res.status === 200 || res.status === 204) {
+          setRequests(requests.filter((r) => r._id !== id))
+          setSuccess('تم حذف الطلب بنجاح')
+          setTimeout(() => setSuccess(''), 3000)
+          return
+        }
+        throw new Error(`Server error (${res.status}): ${text.substring(0, 100)}`)
       }
       
-      if (res.ok || res.status === 200) {
+      if (res.ok || res.status === 200 || res.status === 204) {
         setRequests(requests.filter((r) => r._id !== id))
         setSuccess('تم حذف الطلب بنجاح')
         setTimeout(() => setSuccess(''), 3000)
       } else {
-        setError(data.error || 'حدث خطأ أثناء الحذف')
+        setError(data?.error || `حدث خطأ أثناء الحذف (${res.status})`)
       }
     } catch (err) {
       console.error('Delete request error:', err)
       if (err.message?.includes('Failed to fetch') || err.message?.includes('ERR_CONNECTION_REFUSED')) {
         setError('لا يمكن الاتصال بالخادم. يرجى المحاولة لاحقاً')
+      } else if (err.message?.includes('404') || err.message?.includes('not found')) {
+        setError('الخادم غير متاح حالياً. يرجى المحاولة لاحقاً')
       } else {
-        setError('حدث خطأ في الاتصال بالخادم')
+        setError(err.message || 'حدث خطأ في الاتصال بالخادم')
       }
     }
   }
@@ -112,29 +152,42 @@ const AdminDashboard = ({ token, setToken }) => {
         body: JSON.stringify({ newPasscode }),
       })
       
-      // Check if response is JSON before parsing
-      const contentType = res.headers.get('content-type')
-      let data
-      if (contentType && contentType.includes('application/json')) {
-        data = await res.json()
+      // Handle non-JSON responses (like 404 HTML pages)
+      const contentType = res.headers.get('content-type') || ''
+      let data = null
+      
+      if (contentType.includes('application/json')) {
+        try {
+          data = await res.json()
+        } catch (parseError) {
+          console.error('Failed to parse JSON response:', parseError)
+          throw new Error(`Server returned invalid JSON (status ${res.status})`)
+        }
       } else {
+        // Non-JSON response (likely HTML error page)
         const text = await res.text()
-        throw new Error(`Server returned ${res.status}: ${text.substring(0, 100)}`)
+        console.error(`Non-JSON response (${res.status}):`, text.substring(0, 200))
+        if (res.status === 404) {
+          throw new Error('Endpoint not found. Please check backend configuration.')
+        }
+        throw new Error(`Server error (${res.status}): ${text.substring(0, 100)}`)
       }
       
-      if (res.ok) {
+      if (res.ok && data) {
         setPasscodeMsg('تم تغيير كلمة المرور بنجاح')
         setNewPasscode('')
         setTimeout(() => setPasscodeMsg(''), 3000)
       } else {
-        setPasscodeMsg(data.error || 'حدث خطأ')
+        setPasscodeMsg(data?.error || `حدث خطأ (${res.status})`)
       }
     } catch (err) {
       console.error('Change passcode error:', err)
       if (err.message?.includes('Failed to fetch') || err.message?.includes('ERR_CONNECTION_REFUSED')) {
         setPasscodeMsg('لا يمكن الاتصال بالخادم. يرجى المحاولة لاحقاً')
+      } else if (err.message?.includes('404') || err.message?.includes('not found')) {
+        setPasscodeMsg('الخادم غير متاح حالياً. يرجى المحاولة لاحقاً')
       } else {
-        setPasscodeMsg('حدث خطأ في الاتصال بالخادم')
+        setPasscodeMsg(err.message || 'حدث خطأ في الاتصال بالخادم')
       }
     }
   }
