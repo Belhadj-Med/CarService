@@ -39,6 +39,16 @@ function App() {
               )
             } 
           />
+          <Route 
+            path="/adm" 
+            element={
+              adminToken ? (
+                <AdminDashboard token={adminToken} setToken={setAdminToken} />
+              ) : (
+                <AdminLogin setToken={setAdminToken} />
+              )
+            } 
+          />
         </Routes>
       </div>
     </Router>
