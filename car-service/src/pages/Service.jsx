@@ -6,6 +6,7 @@ import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
 import 'leaflet/dist/leaflet.css'
 import { BACKEND_URL } from '../config'
+import { safeParseResponse, getErrorMessage } from '../utils/api'
 import './Service.css'
 
 // Fix Leaflet default icon
@@ -114,28 +115,21 @@ const Service = () => {
         }),
       })
 
-      // Handle non-JSON responses (like 404 HTML pages)
-      const contentType = res.headers.get('content-type') || ''
-      let data = null
-      
-      if (contentType.includes('application/json')) {
-        try {
-          data = await res.json()
-        } catch (parseError) {
-          console.error('Failed to parse JSON response:', parseError)
-          throw new Error(`Server returned invalid JSON (status ${res.status})`)
-        }
-      } else {
-        // Non-JSON response (likely HTML error page)
-        const text = await res.text()
-        console.error(`Non-JSON response (${res.status}):`, text.substring(0, 200))
+      // Safely parse response (handles both JSON and HTML error pages)
+      const { data, isJson } = await safeParseResponse(res)
+
+      if (!res.ok) {
+        // Server returned an error
         if (res.status === 404) {
-          throw new Error('Endpoint not found. Please check backend configuration.')
+          throw new Error('Endpoint not found (404). Please check backend configuration.')
         }
-        throw new Error(`Server error (${res.status}): ${text.substring(0, 100)}`)
+        if (isJson && data?.error) {
+          throw new Error(data.error)
+        }
+        throw new Error(`Server error (${res.status})`)
       }
 
-      if (res.ok && data) {
+      if (isJson && data) {
         setSuccess(data.message || 'تم إرسال طلبك بنجاح! سنتواصل معك قريباً')
         setFormData({
           name: '',
@@ -148,17 +142,11 @@ const Service = () => {
         })
         setPosition(null)
       } else {
-        setError(data?.error || `حدث خطأ أثناء إرسال الطلب (${res.status})`)
+        throw new Error('Server returned invalid response format')
       }
     } catch (err) {
       console.error('Service form error:', err)
-      if (err.message?.includes('Failed to fetch') || err.message?.includes('ERR_CONNECTION_REFUSED')) {
-        setError('لا يمكن الاتصال بالخادم. يرجى التحقق من الاتصال بالإنترنت أو المحاولة لاحقاً')
-      } else if (err.message?.includes('404') || err.message?.includes('not found')) {
-        setError('الخادم غير متاح حالياً. يرجى المحاولة لاحقاً')
-      } else {
-        setError(err.message || 'حدث خطأ في الاتصال بالخادم. يرجى المحاولة مرة أخرى')
-      }
+      setError(getErrorMessage(err))
     } finally {
       setLoading(false)
     }
